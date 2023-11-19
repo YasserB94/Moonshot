@@ -11,16 +11,47 @@ struct MainView: View {
     private var astronauts:[String:Astronaut] = AstronautService().all()
     private var missions:[Mission] = MissionService().all()
     
-
+    @State private var currentLayoutOption:MainViewLayoutOption = .grid
+    
+    private enum MainViewLayoutOption:Identifiable,CaseIterable,CustomStringConvertible{
+        case grid;
+        case list;
+        
+        var id:Self{self}
+        
+        var description: String{
+            switch self{
+            case .grid:return "grid";
+            case .list:return "list";
+            }
+        }
+    }
+    
     
     var body: some View {
         NavigationStack{
             ZStack{
-            ScrollView{
-                MissionsGridView(missions:missions,astronauts: astronauts)
-                        .padding(.horizontal,5)
+                switch(currentLayoutOption){
+                case .grid:
+                    ScrollView {
+                        MissionsGridView(missions:missions,astronauts: astronauts)
+                            .padding(.horizontal,5)
+                    }
+                case .list:
+                    MissionsListView(missions:missions,astronauts: astronauts)
+                        .listStyle(.plain)
                 }
-            }.navigationTitle("Moonshot")
+                
+            }
+            .toolbar(content: {
+                Picker("Layout", selection: $currentLayoutOption) {
+                    ForEach(MainViewLayoutOption.allCases,id:\.id){option in
+                        Text(option.description.capitalized)
+                    }
+                }.pickerStyle(.segmented)
+            })
+            .navigationTitle("Moonshot")
+            
         }
     }
 }

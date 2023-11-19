@@ -41,8 +41,18 @@ struct MissionView: View {
                         .padding(.top)
                         Divider()
                     VStack(alignment: .leading) {
-                        Text("Mission Highlights")
-                            .font(.title.bold())
+                        HStack{
+                            Text("Mission Highlights")
+                                .font(.title.bold())
+                            if let date = mission.formattedLaunchDate {
+                                Spacer()
+                                VStack(alignment:.trailing){
+                                    Text(date)
+                                        .font(.caption)
+                                }
+                            }
+                        }
+
                             .padding(.bottom, 5)
 
                         Text(mission.description)
@@ -52,6 +62,7 @@ struct MissionView: View {
                 }
                 .padding(.bottom)
                 crewMembersView
+                    .padding(.horizontal)
             }
             .navigationTitle(mission.displayName)
             .navigationBarTitleDisplayMode(.inline)
@@ -69,21 +80,20 @@ struct MissionView: View {
                             Image(crewMember.astronaut.id)
                                 .resizable()
                                 .frame(width: 104, height: 72)
-                                .clipShape(.capsule)
-                                .overlay(
-                                    Capsule()
-                                        .strokeBorder(.white, lineWidth: 1)
-                                )
-
                             VStack(alignment: .leading) {
                                 Text(crewMember.astronaut.name)
-                                    .foregroundStyle(.white)
                                     .font(.headline)
                                 Text(crewMember.role)
-                                    .foregroundStyle(.white.opacity(0.5))
+                                    .foregroundStyle(.opacity(0.8))
                             }
                         }
-                        .padding(.horizontal)
+                        .foregroundColor(.secondary)
+                        .padding(.trailing)
+                        .background(.ultraThinMaterial)
+                        .clipShape(
+                            .rect(topLeadingRadius: 30, bottomLeadingRadius: 30, bottomTrailingRadius: 10, topTrailingRadius: 10, style: .circular)
+                        )
+
                     }
                 }
             }
@@ -94,5 +104,5 @@ struct MissionView: View {
 #Preview {
     let missions = MissionService().all()
     let astros = AstronautService().all()
-    return MissionView(mission: missions[0], astronauts: astros)
+    return MissionView(mission: missions[1], astronauts: astros)
 }
