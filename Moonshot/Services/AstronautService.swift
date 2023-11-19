@@ -8,7 +8,7 @@
 import Foundation
 
 struct AstronautService {
-    var astronauts:[String:Astronaut];
+    private var astronauts:[String:Astronaut];
     
     init(){
         astronauts = AstronautService.loadAstronauts()
